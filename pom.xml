@@ -11,7 +11,6 @@
     <!-- ********************************************** -->
     <!-- **************** PROJECT INFO **************** -->
     <!-- ********************************************** -->
-
     <groupId>be.gestatech</groupId>
     <artifactId>gst-base-pom</artifactId>
     <version>1.0.0-SNAPSHOT</version>
@@ -31,9 +30,69 @@
     </licenses>
 
     <!-- ********************************************** -->
+    <!-- *********** ORGANIZATION AND MEMBERS ********* -->
+    <!-- ********************************************** -->
+    <organization>
+        <name>gestatech</name>
+        <url>https://github.com/gestatech</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>afp</id>
+            <name>Fariala AMURI</name>
+            <email>fariala.amuri@gestatech.be</email>
+            <url>https://github.com/gestatech</url>
+            <organization>gestatech</organization>
+            <organizationUrl>https://github.com/gestatech</organizationUrl>
+            <roles>
+                <role>Architech</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+            <properties />
+        </developer>
+    </developers>
+
+    <!-- ********************************************** -->
+    <!-- ************ RESOURCES AND SERVICES ********** -->
+    <!-- ********************************************** -->
+    <scm>
+        <connection>scm:git:https://github.com/gestatech/gst-base-pom.git</connection>
+        <developerConnection>scm:git:https://github.com/gestatech/gst-base-pom.git</developerConnection>
+        <tag>head</tag>
+        <url>https://www.github.com/gestatech/gst-base-pom</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://www.github.com/gestatech/gst-base-pom/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/gestatech/gst-base-pom</url>
+        <notifiers />
+    </ciManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <!--uniqueVersion>false</uniqueVersion-->
+            <id>ossrh</id>
+            <name>Snapshots Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <!--uniqueVersion>false</uniqueVersion-->
+            <id>ossrh</id>
+            <name>Releases Repository</name>
+            <url>https://oss.sonatype.org/service/local/staring/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <!-- ********************************************** -->
     <!-- **************** PROPERTIES ****************** -->
     <!-- ********************************************** -->
-
     <properties>
         <!-- ============================================== -->
         <!-- =============== MAVEN VERSION ================ -->
@@ -51,4 +110,117 @@
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
     </properties>
 
+    <!-- ********************************************** -->
+    <!-- ******************* BUILD ******************** -->
+    <!-- ********************************************** -->
+    <build>
+        <defaultGoal>clean package install</defaultGoal>
+        <pluginManagement>
+            <plugins>
+                <!-- Distribution Management and Authentication -->
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.7</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+                <!-- Javadoc and Sources Attachments -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.4</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- GPG Signed Components -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Nexus Staging Maven Plugin for Deployment and Release -->
+                <!--
+                If your version is a release version (does not end in -SNAPSHOT) and with this setup in place, you can
+                run a deployment to OSSRH and an automated release to the Central Repository with the usual:
+
+                >> mvn clean deploy
+
+                With the property autoReleaseAfterClose set to false you can manually inspect the staging repository in
+                the Nexus Repository Manager and trigger a release of the staging repository later with
+
+                >> mvn nexus-staging:release
+
+                If you find something went wrong you can drop the staging repository with
+
+
+                -->
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.7</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
