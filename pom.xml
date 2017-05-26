@@ -108,6 +108,17 @@
         <!-- ============================================== -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+        <!-- ============================================== -->
+        <!-- ============== PLUGINS VERSIONS ============== -->
+        <!-- ============================================== -->
+        <plugin.gpg.version>1.6</plugin.gpg.version>
+        <plugin.javadoc.version>2.10.4</plugin.javadoc.version>
+        <plugin.source.version>3.0.1</plugin.source.version>
+        <plugin.staging.version>1.6.7</plugin.staging.version>
+        <!-- ============================================== -->
+        <!-- ================= MAVEN SITE ================= -->
+        <!-- ============================================== -->
+        <site.skin.version>0.6.0</site.skin.version>
     </properties>
 
     <!-- ********************************************** -->
@@ -117,23 +128,11 @@
         <defaultGoal>clean package install</defaultGoal>
         <pluginManagement>
             <plugins>
-                <!-- Distribution Management and Authentication -->
-                <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.7</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <serverId>ossrh</serverId>
-                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    </configuration>
-                </plugin>
                 <!-- Javadoc and Sources Attachments -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>${plugin.source.version}</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -146,7 +145,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
+                    <version>${plugin.javadoc.version}</version>
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
@@ -160,7 +159,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.6</version>
+                    <version>${plugin.gpg.version}</version>
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
@@ -171,26 +170,11 @@
                         </execution>
                     </executions>
                 </plugin>
-                <!-- Nexus Staging Maven Plugin for Deployment and Release -->
-                <!--
-                If your version is a release version (does not end in -SNAPSHOT) and with this setup in place, you can
-                run a deployment to OSSRH and an automated release to the Central Repository with the usual:
-
-                >> mvn clean deploy
-
-                With the property autoReleaseAfterClose set to false you can manually inspect the staging repository in
-                the Nexus Repository Manager and trigger a release of the staging repository later with
-
-                >> mvn nexus-staging:release
-
-                If you find something went wrong you can drop the staging repository with
-
-
-                -->
+                <!-- Distribution Management and Authentication -->
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.7</version>
+                    <version>${plugin.staging.version}</version>
                     <extensions>true</extensions>
                     <configuration>
                         <serverId>ossrh</serverId>
@@ -216,10 +200,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
