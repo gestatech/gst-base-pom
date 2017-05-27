@@ -1,5 +1,7 @@
 # gst-base-pom
 
+[![Build Status](https://travis-ci.org/gestatech/gst-base-pom.svg?branch=master)](https://travis-ci.org/gestatech/gst-base-pom)
+
 Parent [Maven POM][maven-pom-intro] setting up a Maven project for common usage, taking advantage of several plugins, and supporting good practices such as unit and integration testing, or dependency convergence.
 
 This is a generic base POM, useful for any kind of project, no matter what actual technologies they are based on, and will add no dependency, apart from the plugins.
