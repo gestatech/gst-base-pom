@@ -50,7 +50,26 @@
                 <role>Developer</role>
             </roles>
             <timezone>+1</timezone>
-            <properties />
+            <properties/>
+        </developer>
+        <developer>
+            <name>Committers</name>
+            <id>Committers</id>
+            <url>https://github.com/orgs/simpligility/teams/gst-base-pom-committers</url>
+            <roles>
+                <role>Committers</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <name>Contributors</name>
+            <id>contributors</id>
+            <url>https://github.com/gestatech/gst-base-pom/graphs/contributors</url>
+            <roles>
+                <role>Developer</role>
+                <role>Contributor</role>
+            </roles>
+            <timezone>+1</timezone>
         </developer>
     </developers>
 
@@ -60,8 +79,8 @@
     <scm>
         <connection>scm:git:https://github.com/gestatech/gst-base-pom.git</connection>
         <developerConnection>scm:git:https://github.com/gestatech/gst-base-pom.git</developerConnection>
+        <url>https://www.github.com/gestatech/gst-base-pom/tree/${scm.branch}</url>
         <tag>head</tag>
-        <url>https://www.github.com/gestatech/gst-base-pom</url>
     </scm>
 
     <issueManagement>
@@ -72,22 +91,22 @@
     <ciManagement>
         <system>Travis CI</system>
         <url>https://travis-ci.org/gestatech/gst-base-pom</url>
-        <notifiers />
+        <notifiers/>
     </ciManagement>
 
     <distributionManagement>
         <snapshotRepository>
-            <!--uniqueVersion>false</uniqueVersion-->
             <id>ossrh</id>
-            <name>Snapshots Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
-            <!--uniqueVersion>false</uniqueVersion-->
             <id>ossrh</id>
-            <name>Releases Repository</name>
-            <url>https://oss.sonatype.org/service/local/staring/deploy/maven2/</url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
+        <site>
+            <id>github</id>
+            <url>scm:git:https://github.com/gestatech/gst-base-pom.git</url>
+        </site>
     </distributionManagement>
 
     <!-- ********************************************** -->
@@ -98,6 +117,10 @@
         <!-- =============== MAVEN VERSION ================ -->
         <!-- ============================================== -->
         <maven.version>3.3.9</maven.version>
+        <!-- ============================================== -->
+        <!-- =============== SCM VERSION ================== -->
+        <!-- ============================================== -->
+        <scm.branch>master</scm.branch>
         <!-- ============================================== -->
         <!-- ================== ENCODING ================== -->
         <!-- ============================================== -->
@@ -113,6 +136,8 @@
         <!-- ============================================== -->
         <plugin.gpg.version>1.6</plugin.gpg.version>
         <plugin.javadoc.version>2.10.4</plugin.javadoc.version>
+        <plugin.release.version>2.5.3</plugin.release.version>
+        <plugin.scm.version>1.9.5</plugin.scm.version>
         <plugin.source.version>3.0.1</plugin.source.version>
         <plugin.staging.version>1.6.7</plugin.staging.version>
         <!-- ============================================== -->
@@ -120,6 +145,13 @@
         <!-- ============================================== -->
         <site.skin.version>0.6.0</site.skin.version>
     </properties>
+
+    <!-- ********************************************** -->
+    <!-- *************** DEPENDENCIES ***************** -->
+    <!-- ********************************************** -->
+    <dependencyManagement>
+
+    </dependencyManagement>
 
     <!-- ********************************************** -->
     <!-- ******************* BUILD ******************** -->
@@ -167,6 +199,10 @@
                             <goals>
                                 <goal>sign</goal>
                             </goals>
+                            <configuration>
+                                <keyname>${gpg.keyname}</keyname>
+                                <passphraseServerId>${gpg.passphrase}</passphraseServerId>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -180,15 +216,34 @@
                         <serverId>ossrh</serverId>
                         <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                         <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        <!--stagingProfileId>42b61fb4c62700</stagingProfileId-->
+                    </configuration>
+                </plugin>
+                <!-- Performing a Release Deployment with the Maven Release Plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${plugin.release.version}</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <releaseProfiles>ossrh-release</releaseProfiles>
+                        <arguments>-Pofficial-release</arguments>
+                        <goals>plugin:report deploy site-deploy nexus-staging:release</goals>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>${plugin.scm.version}</version>
+                    <configuration>
+                        <scmVersionType>branch</scmVersionType>
+                        <scmVersion>${scm.branch}</scmVersion>
                     </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -201,6 +256,92 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
+
+    <!-- ********************************************** -->
+    <!-- ****************** PROFILES ****************** -->
+    <!-- ********************************************** -->
+    <profiles>
+        <profile>
+            <id>ossrh-release</id>
+            <build>
+                <plugins>
+                    <!-- We want to sign the artifact, the POM, and all attached artifacts -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${plugin.gpg.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${plugin.staging.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>build-extras</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${plugin.source.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${plugin.javadoc.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
